@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <title>ВЗУТТЯ СПОРТИВНЕ</title>
+</head>
+<body>
+    <h1>ВЗУТТЯ СПОРТИВНЕ</h1>
+    <form method="POST" action="{% url 'update' %}">
+        {% csrf_token %}
+        <button type="submit">
+            інформація про оновлення (Довга)
+        </button>
+    </form>
+    <div class="card-container">
+        {% for card in page_obj %}
+            <div class="card">
+                <h3>{{ card.name }}</h3>
+                <p>Ціна: {{ card.price }}</p>
+                <a href="{{ card.link }}" target="_blank">
+                    переглянути детальну інформацію
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</body>
+</html>
