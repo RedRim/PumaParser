@@ -1,0 +1,7 @@
+version: "3"
+services: 
+  parser_app:
+    build:
+      .
+    ports:
+      - "8000:8000"
