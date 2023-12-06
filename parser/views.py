@@ -4,29 +4,43 @@ from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.utils.text import slugify
+from django.views.generic import DetailView
+from django.db.models import F, Value, IntegerField, Case, When
 
 import requests
 from bs4 import BeautifulSoup
 
 from .models import Card
 
+
 class ShoesView(View):
     template_name = 'parser/list.html'
     items_per_page = 36
 
     def get(self, request, *args, **kwargs):
-
         page_number = request.GET.get('page', 1)
-        cards = Card.objects.all()
+        cards = Card.objects.annotate(has_photo=Case(
+            When(photo__isnull=False, then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField(),
+        )).order_by('-has_photo')
         paginator = Paginator(cards, self.items_per_page)
         page_obj = paginator.get_page(page_number)
         context = {'page_obj': page_obj, 'current_page': page_obj.number}
         return render(request, self.template_name, context)
-    
+
+
+class DetailShoesView(DetailView):
+    model = Card
+    template_name = 'parser/detail.html'
+    context_object_name = 'Cards'
+
+
 def is_page_not_found(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     not_found_message = 'Ми не можемо знайти продукти, що відповідають вибору'
     return not_found_message in soup.get_text().lower()
+
 
 def update(request):
     headers = {
@@ -40,7 +54,7 @@ def update(request):
     while True:
         url = f'{base_url}{page}{current_page}'
         req = requests.get(url, headers=headers)
-        if is_page_not_found(req.text) or current_page==17: # потом убрать
+        if is_page_not_found(req.text) or current_page == 17:  # потом убрать
             print(f'Ми не можемо знайти продукти, що відповідають вибору на странице')
             break
         soup = BeautifulSoup(req.text, 'html.parser')
@@ -48,20 +62,23 @@ def update(request):
 
         for card in cards:
             name = card.find('a', class_='product-item__name').text.strip()
-            price = int(card.find('span', class_='price').text.replace(' ', '').replace('₴', '').replace('\n', '').strip().split(",")[0])
+            price = int(card.find('span', class_='price').text.replace(
+                ' ', '').replace('₴', '').replace('\n', '').strip().split(",")[0])
             link = card.find('a', class_='product-item__img-w').get('href')
 
             if not Card.objects.filter(link=link).exists():
                 card = Card(name=name, price=price, link=link)
                 card.save()
-                # print(current_page)
-                # response_detail = requests.get(link, headers=headers)
-                # soup_detail= BeautifulSoup(response_detail.text, 'html.parser')
-                # img_url = soup_detail.find('img', class_='gallery-item__img').get('src')
-                # image_content = requests.get(img_url).content
-                # image_file = ContentFile(image_content)
-                # image_file.name = f'{card.slug}.png'
-                # card.photo = image_file
-                # card.save()
+                response_detail = requests.get(link, headers=headers)
+                soup_detail = BeautifulSoup(
+                    response_detail.text, 'html.parser')
+                img_url = soup_detail.find(
+                    'img', class_='gallery-item__img').get('src')
+                image_content = requests.get(img_url).content
+                image_file = ContentFile(image_content)
+                image_file.name = f'{card.slug}.png'
+                card.photo = image_file
+                card.save()
         current_page += 1
+        print(current_page)
     return redirect('shoes_list')

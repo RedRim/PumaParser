@@ -16,3 +16,8 @@
     align-items:stretch;
     flex-wrap: wrap;
 }
+
+.product-image {
+    width: auto;
+    height: 200px;
+}

@@ -28,5 +28,5 @@ class Card(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
     
-    # def get_absolute_url(self):
-    #     return reverse('', kwargs={'card_slug': self.slug})
+    def get_absolute_url(self):
+        return reverse('', kwargs={'card_slug': self.slug})

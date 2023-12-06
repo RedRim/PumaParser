@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="text/css" href="{% static 'css/style.css' %}" rel="stylesheet" />
-    <title>ВЗУТТЯ СПОРТИВНЕ</title>
-</head>
-<body>
+{% extends 'parser/base.html' %}
+
+{% block content %}
     <h1>ВЗУТТЯ СПОРТИВНЕ</h1>
     <form method="POST" action="{% url 'update' %}">
         {% csrf_token %}
@@ -19,12 +12,13 @@
         {% for card in page_obj %}
             <div class="card">
                 <h3>{{ card.name }}</h3>
-                <p>Ціна: {{ card.price }}</p>
                 <a href="{{ card.link }}" target="_blank">
-                    переглянути детальну інформацію
+                    <img src="/media/{{ card.photo }}" alt="{{ card.name }}" class="product-image">
                 </a>
+                <p>Ціна: {{ card.price }}₴</p>
             </div>
         {% endfor %}
+
     </div>
 
     <div class="pagination">
@@ -44,5 +38,4 @@
             {% endif %}
         </span>
     </div>
-</body>
-</html>
+{% endblock %}
