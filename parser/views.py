@@ -1,39 +1,40 @@
-from django.views import View
 from django.shortcuts import render, redirect
-from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
-from django.conf import settings
-from django.utils.text import slugify
-from django.views.generic import DetailView
-from django.db.models import F, Value, IntegerField, Case, When
+from django.views.generic import DetailView, ListView
 
 import requests
 from bs4 import BeautifulSoup
 
 from .models import Card
 
-
-class ShoesView(View):
+class ShoesView(ListView):
+    model = Card
     template_name = 'parser/list.html'
-    items_per_page = 36
+    context_object_name = 'page_obj'
+    paginate_by = 36
 
-    def get(self, request, *args, **kwargs):
-        page_number = request.GET.get('page', 1)
-        cards = Card.objects.annotate(has_photo=Case(
-            When(photo__isnull=False, then=Value(1)),
-            default=Value(0),
-            output_field=IntegerField(),
-        )).order_by('-has_photo')
-        paginator = Paginator(cards, self.items_per_page)
-        page_obj = paginator.get_page(page_number)
-        context = {'page_obj': page_obj, 'current_page': page_obj.number}
-        return render(request, self.template_name, context)
+    def get_queryset(self):
+        sort = self.request.GET.get('sort', 'price')
+        queryset = Card.objects.all()
 
+        if sort == 'price':
+            queryset = queryset.order_by('price')
+        elif sort == '-price':
+            queryset = queryset.order_by('-price')
 
-class DetailShoesView(DetailView):
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_page'] = self.request.GET.get('page', 1)
+        context['sort'] = self.request.GET.get('sort', 'price')
+        return context
+
+class CardDetailView(DetailView):
     model = Card
     template_name = 'parser/detail.html'
-    context_object_name = 'Cards'
+    context_object_name = 'card'
+    slug_url_kwarg = 'card_slug'
 
 
 def is_page_not_found(html_content):
@@ -68,7 +69,7 @@ def update(request):
 
             if not Card.objects.filter(link=link).exists():
                 card = Card(name=name, price=price, link=link)
-                card.save()
+                card.save(commit=False)
                 response_detail = requests.get(link, headers=headers)
                 soup_detail = BeautifulSoup(
                     response_detail.text, 'html.parser')
@@ -82,3 +83,17 @@ def update(request):
         current_page += 1
         print(current_page)
     return redirect('shoes_list')
+
+# def update_detail_info():
+#     headers = {
+#         'Accept': '*/*',
+#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+#     }
+#     cards = Card.objects.all()
+#     for card in cards:
+#         link = card.link
+#         req = requests.get(link, headers=headers)
+#         soup = BeautifulSoup(req.text, 'html.parser')
+#         description = soup.find('p').text
+#         card.description = description
+#         card.save()

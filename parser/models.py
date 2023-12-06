@@ -8,6 +8,7 @@ class Card(models.Model):
     price = models.IntegerField(verbose_name='Цена')
     link = models.CharField(max_length=400, verbose_name='Ссылка')
     photo = models.ImageField(upload_to="photos", verbose_name="Фото", blank=True)
+    description = models.TextField(null=True)
 
     def __str__(self):
         return self.name
@@ -29,4 +30,4 @@ class Card(models.Model):
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse('', kwargs={'card_slug': self.slug})
+        return reverse('card_detail', kwargs={'card_slug': self.slug})

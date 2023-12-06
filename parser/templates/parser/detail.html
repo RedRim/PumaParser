@@ -1,6 +1,7 @@
 {% extends 'parser/base.html' %}
 
 {% block content %}
-    <h1>{{ name }}</h1>
-    <p>{{ price }}</p>
+    <h1>{{ card.name }}</h1>
+    <img src="/media/{{ card.photo }}" alt="{{ card.name }}" class="product-image-detail">
+    <h2>Тут повинна бути інформація про товар</h2>
 {% endblock %}
