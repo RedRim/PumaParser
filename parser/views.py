@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.core.files.base import ContentFile
 from django.views.generic import DetailView, ListView
-from django.core.paginator import Paginator
+from django.contrib.postgres.search import TrigramSimilarity
 
 import requests
 from bs4 import BeautifulSoup
 
 from .models import Card
+from .forms import SearchForm
 
 class ShoesView(ListView):
     model = Card
@@ -15,9 +16,14 @@ class ShoesView(ListView):
     paginate_by = 36
 
     def get_queryset(self):
-        sort = self.request.GET.get('sort', 'price')
         queryset = Card.objects.all()
 
+        search_query = self.request.GET.get('search_query')
+        if search_query:
+            queryset = queryset.annotate(similarity=TrigramSimilarity('name', search_query))
+            queryset = queryset.filter(similarity__gt=0.05)
+            
+        sort = self.request.GET.get('sort', 'price')
         if sort == 'price':
             queryset = queryset.order_by('price')
         elif sort == '-price':
@@ -29,6 +35,7 @@ class ShoesView(ListView):
         context = super().get_context_data(**kwargs)
         sort = self.request.GET.get('sort', 'price')
         context['sort'] = sort
+        context['search_form'] = SearchForm(self.request.GET)
         return context
 
 class CardDetailView(DetailView):

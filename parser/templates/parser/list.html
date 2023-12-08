@@ -2,6 +2,12 @@
 
 {% block content %}
     <h1>ВЗУТТЯ СПОРТИВНЕ</h1>
+    
+    <form method="GET" action="{% url 'shoes_list' %}">
+        {{ search_form }}
+        <button type="submit">Search</button>
+    </form>
+
     <form method="POST" action="{% url 'update' %}">
         {% csrf_token %}
         <button type="submit">
