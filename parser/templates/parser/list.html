@@ -26,21 +26,41 @@
         {% endfor %}
     </div>
 
-    <div class="pagination">
-        <span class="step-links">
+    {% if page_obj.has_other_pages %} 
+    <nav class="list-pages">
+        <ul>
             {% if page_obj.has_previous %}
-                <a href="?page=1{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">previous</a>
+                <li class="page-num">
+                    <a href="?sort={{ sort }}&page=1">&laquo;&laquo;</a>
+                </li>
+                <li class="page-num">
+                    <a href="?sort={{ sort }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
+                </li>
             {% endif %}
-
-            <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
+            
+            {% for p in paginator.page_range %}
+                {% if page_obj.number == p %} 
+                    <li class="page-num page-num-selected">{{ p }}</li>
+                {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %} 
+                    <li class="page-num">
+                        <a href="?sort={{ sort }}&page={{ p }}">{{ p }}</a>
+                    </li>
+                {% endif %} 
+            {% endfor %}
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">last &raquo;</a>
+                <li class="page-num">
+                    <a href="?sort={{ sort }}&page={{ page_obj.next_page_number }}">&raquo;</a>
+                </li>
+                <li class="page-num">
+                    <a href="?sort={{ sort }}&page={{ page_obj.paginator.num_pages }}">&raquo;&raquo;</a>
+                </li>
             {% endif %}
-        </span>
-    </div>
+        </ul>
+    </nav>
+    {% endif %}
+
+
+
+    
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.files.base import ContentFile
 from django.views.generic import DetailView, ListView
+from django.core.paginator import Paginator
 
 import requests
 from bs4 import BeautifulSoup
@@ -10,7 +11,7 @@ from .models import Card
 class ShoesView(ListView):
     model = Card
     template_name = 'parser/list.html'
-    context_object_name = 'page_obj'
+    context_object_name = 'cards'
     paginate_by = 36
 
     def get_queryset(self):
@@ -26,8 +27,8 @@ class ShoesView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['current_page'] = self.request.GET.get('page', 1)
-        context['sort'] = self.request.GET.get('sort', 'price')
+        sort = self.request.GET.get('sort', 'price')
+        context['sort'] = sort
         return context
 
 class CardDetailView(DetailView):
