@@ -14,6 +14,7 @@ class Card(models.Model):
         return self.name
     
     class Meta:
+        ordering = ['-price']
         indexes = [
             models.Index(fields=['slug'])
         ]

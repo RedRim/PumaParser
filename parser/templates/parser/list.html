@@ -1,33 +1,63 @@
 {% extends 'parser/base.html' %}
+{% load static %}
 
 {% block content %}
-    <h1>ВЗУТТЯ СПОРТИВНЕ</h1>
-    
-    <form method="GET" action="{% url 'shoes_list' %}">
-        {{ search_form }}
-        <button type="submit">Search</button>
-    </form>
+    <div class="header-container">
+        <form method="POST" action="{% url 'update' %}">
+            {% csrf_token %}
+            <button type="submit" class="button-update">
+                Обновить данные (долго)
+            </button>
+        </form>
 
-    <form method="POST" action="{% url 'update' %}">
-        {% csrf_token %}
-        <button type="submit">
-            інформація про оновлення (Довга)
-        </button>
-    </form>
+        <h1>ВЗУТТЯ СПОРТИВНЕ</h1>
+
+        <form method="GET" action="{% url 'shoes_list' %}" class="search-form">
+            <div class="input-group">
+                {{ search_form.search_query }}
+                <button class='hidden-button' type="button">
+                    <img src="{% static 'img/search.svg' %}" alt="Search Icon">
+                </button>                                   
+            </div>
+        </form>
+        
+        <div class="toolbar-sorter sorter">
+            <label class="sorter__label hide-on-mobile" for="sorter">Сортувати за:</label>
+            <ul class="sorter__list hide-on-mobile _visible">
+                <li class="sorter-item ">
+                    <div class="sorter-item__i">
+                        <a href="?sort=price">Ціною: за збільшенням</a>
+                    </div>
+                </li>
+                <li class="sorter-item ">
+                    <div class="sorter-item__i">
+                        <a href="?sort=-price">Ціною: за зменшенням</a>
+                    </div>
+                </li>
+            </ul>
+        </div>    
+    </div>
+
     
-    <div class="sorting-buttons">
-        <a href="?sort=price">Сортувати за ціною по зростанню</a>
-        <a href="?sort=-price">Сортувати за ціною по спаданню</a>
-    </div>    
     
-    <div class="card-container">
+    <div class="grid">
         {% for card in page_obj %}
-            <div class="card">
-                <h3>{{ card.name }}</h3>
-                <a href="{{ card.get_absolute_url }}" target="_blank">
-                    <img src="/media/{{ card.photo }}" alt="{{ card.name }}" class="product-image">
-                </a>
-                <p>Ціна: {{ card.price }}₴</p>
+            <div class="grid__item image-sv01">
+                <div class="product-item">
+                    <div class="product-item__media">
+                        <a href="{{ card.get_absolute_url }}" target="_blank" class="product-item__img-w">
+                            <img src="/media/{{ card.photo }}" alt="{{ card.name }}" class="product-item__img ">
+                        </a>
+                    </div>
+                    <div class="product-item__info"">
+                        <div class="product-item__name-w">
+                            <h3>{{ card.name }}</h3>
+                        </div>
+                        <div class="product-item__price">
+                            <p>Ціна: {{ card.price }}₴</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         {% endfor %}
     </div>
@@ -66,7 +96,4 @@
     </nav>
     {% endif %}
 
-
-
-    
 {% endblock %}

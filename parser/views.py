@@ -60,6 +60,8 @@ def update(request):
     base_url = 'https://ua.puma.com/uk/sportivnye-tovary-dlja-muzhchin/obuv.html'
     page = '?p='
 
+    print('Начался процесс сбора данных. Чтобы остановить его, перезапустите сервер')
+
     while True:
         url = f'{base_url}{page}{current_page}'
         req = requests.get(url, headers=headers)
@@ -77,7 +79,7 @@ def update(request):
 
             if not Card.objects.filter(link=link).exists():
                 card = Card(name=name, price=price, link=link)
-                card.save(commit=False)
+                card.save()
                 response_detail = requests.get(link, headers=headers)
                 soup_detail = BeautifulSoup(
                     response_detail.text, 'html.parser')

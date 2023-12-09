@@ -1,25 +1,127 @@
-.card{
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 0px px rgba(0, 0, 0, 0.1);
-    font-size: large;
-    margin: 20px;
-    padding: 15px;
-    max-width: 250px;
-    min-height: 300px;
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
-.card-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items:stretch;
-    flex-wrap: wrap;
+.header-container h1 {
+    background: linear-gradient(to right, #06005e, #0381ff);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+h1 {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-weight: 700; 
+}
+
+.toolbar-sorter {
+    color: #fff;
+}
+
+.sorter-item__i a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.sorter-item__i a:hover {
+    text-decoration: underline;
+}
+
+.sorter-item__i {
+    width: auto;
+    padding: 5px 10px;
+    background-color: #fff; 
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 5px; 
+    background-size: 200% 100%;
+    background-image: linear-gradient(to right, #001a33, #004080);
+    backdrop-filter: blur(20px);
+}
+
+
+.button-update {
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-size: 200% 100%;
+    background-image: linear-gradient(to right, #001a33, #004080);
+    transition: background-position 0.8s;
+    animation: gradientAnimation 30s infinite;
+    backdrop-filter: blur(20px);
+}
+
+.button-update:hover {
+    animation: gradientHoverAnimation 20s infinite;
+    backdrop-filter: blur(20px);
+}
+
+.button-update:active {
+    transform: scale(0.95);
+    transition: transform 0.3s ease; 
+}
+
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 200% 0%;
+    }
+    50% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: -200% 0%;
+    }
+}
+
+@keyframes gradientHoverAnimation {
+    0% {
+        background-position: 200% 0%;
+    }
+    50% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: -200% 0%;
+    }
+}
+
+
+
+.hidden-button {
+    display: none;
+}
+
+.search-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.header-container {
+    background-color: black;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    flex-direction: column;
+}
+
+.search-form {
+    width: 800px;
+    margin-bottom: 20px;
+    margin: auto;
 }
 
 .product-image {
     width: auto;
     height: 200px;
+    border-bottom: 2px solid #ddd;
 }
 
 .product-image-detail {
@@ -66,4 +168,117 @@
 }
 .list-pages .page-num-selected:hover {
 	box-shadow: none; 
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin: 0 -1rem;
+}
+
+.grid__item {
+    background: #fff;
+    backface-visibility: visible;
+    margin: 1rem 0;
+    outline: solid 1px transparent;
+    padding: 0 0.5rem;
+    width: 25%;
+    will-change: transform;
+}
+
+.grid__item .product-item {
+    will-change: transform;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+div {
+    display: block;
+}
+
+.product-item__media {
+    position: relative;
+}
+.product-item__media {
+    border-bottom: solid 1px #ccc;
+}
+
+.product-item__img-w {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 100%;
+    height: 0;
+}
+a {
+    color: #000;
+    outline: none;
+    text-decoration: none;
+}
+
+.product-item__img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+}
+img {
+    max-width: 100%;
+}
+img {
+    border-style: none;
+}
+
+.product-item__details {
+    padding: 1.2rem 0 0;
+    text-align: center;
+}
+
+.product-item__info {
+    margin: 0 auto;
+    width: 80%;
+}
+
+.product-item__name-w {
+    margin: 0.8rem 0 0.7rem;
+    overflow: hidden;
+    min-height: 6.3rem;
+}
+
+.product-item__name {
+    font: 15px 'FFDIN Regular','FFDIN',Arial,sans-serif;
+    font: 1.5rem 'FFDIN Regular','FFDIN',Arial,sans-serif;
+}
+
+.product-item__price {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font: 15px 'FFDIN Medium','FFDIN',Arial,sans-serif;
+    font: 1.5rem 'FFDIN Medium','FFDIN',Arial,sans-serif;
+}
+
+.toolbar-sorter {
+    display: flex;
+    align-items: center;
+}
+
+.sorter__label {
+    margin-right: 10px;
+    order: 1;
+}
+
+.sorter__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    order: 2;
+}
+
+._active .sorter-item__i a {
+    font-weight: bold;
 }
