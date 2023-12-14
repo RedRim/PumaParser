@@ -23,7 +23,7 @@ class ShoesView(ListView):
             queryset = queryset.annotate(similarity=TrigramSimilarity('name', search_query))
             queryset = queryset.filter(similarity__gt=0.05)
             
-        sort = self.request.GET.get('sort', 'price')
+        sort = self.request.GET.get('sort', '-price')
         if sort == 'price':
             queryset = queryset.order_by('price')
         elif sort == '-price':

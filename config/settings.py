@@ -70,6 +70,8 @@ DATABASES = {
         'NAME': 'parser',
         'USER': 'parser',
         'PASSWORD': 'parser',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
