@@ -1,3 +1,5 @@
+** см код в ветке main ** <br>
+
 Это веб-приложение на Django
 База данных на postgresql
 Сайт, который парсится: https://ua.puma.com/uk/sportivnye-tovary-dlja-muzhchin/obuv.html
